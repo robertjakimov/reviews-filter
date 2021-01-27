@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+
 function getData ($url,$token) { // get data from API function
 $curl = curl_init();
     curl_setopt_array($curl, array(
