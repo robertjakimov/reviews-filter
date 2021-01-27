@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 
 function getData ($url,$token) { // get data from API function
@@ -27,13 +27,16 @@ class ReviewsController extends Controller
     }
 
     public function show(Request $request)
-    {
-      
- //   $this->validate(request(),[
-   //     'hashtag' => 'required'
-    //    ]);
-        
-$inputValues = request()->all(); // $data['hashtag']
+    { 
+    
+   $this->validate(request(),[
+        'min-rating' => 'required|numeric|min:1|max:5',
+        'text' => 'required|numeric|min:0|max:1',
+        'rating' => 'required|numeric|min:0|max:1',
+        'date' => 'required|numeric|min:0|max:1',
+        ]);
+session()->flashInput($request->input());   
+$inputValues = request()->all();
 
 $apiURL = "https://embedsocial.com/admin/v2/api/reviews?reviews_ref=​0d44e0b0a245de6fc9651f870d8b44efc4653184";
 $apiToken = "escfe7569d859dd903d77664e9983edf";
@@ -71,7 +74,7 @@ $finalArray = ($textFilter) ? array_merge($dataText,$dataNoText) : array_merge($
 
    // return "test";
 
-  return view('reviews', compact('finalArray')); 
+  return view('reviews', compact('finalArray'));
 
     } 
 

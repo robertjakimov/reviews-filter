@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'ReviewsController@index');
-Route::post('/search', 'ReviewsController@show'); 
+Route::post('/search', 'ReviewsController@show')->name('search');; 
+Route::get('/search', 'ReviewsController@index'); 
 
 
 

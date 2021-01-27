@@ -16,37 +16,51 @@
             </div>
 
         @endif
- <form class="form-inline" action="{{ url('/search')  }}" method="POST">
+
+@if ($errors->any())
+     @foreach ($errors->all() as $error)
+         <div class="alert alert-danger">
+         {{$error}}
+         </div>
+     @endforeach
+ @endif
+
+
+
+ <form class="form-inline" action="{{URL::route('search')}}" method="POST">
   {{ csrf_field() }}
   <div class="form-group">
-    <label for="rating" style="margin-left: 9px; margin-bottom: 14px;">Order by rating: </label>
+
+  <label for="rating" style="margin-left: 9px; margin-bottom: 14px;">Order by rating: </label>
   <select class="form-control" name="rating" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
-  <option value="1" selected>Highest First</option>
-  <option value="0">Lowest First </option>
-</select>
+  <option value="1" {{ old('rating') == 1 ? "selected" : "" }}> Highest First</option>
+  <option value="0" {{ old('rating') == 0 ? "selected" : "" }}> Lowest First </option>
+</select> 
   </div>
    <div class="form-group">
     <label for="min-rating" style="margin-left: 9px; margin-bottom: 14px;">Minimum rating: </label>
     <select class="form-control" name="min-rating" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
-  <option value="5" selected>5</option>
-  <option value="4">4</option>
-  <option value="3">3</option>
-  <option value="2">2</option>
-  <option value="1">1</option>
+  <option value="5" {{ old('min-rating') == 5 ? "selected" : "" }}>5</option>
+  <option value="4" {{ old('min-rating') == 4 ? "selected" : "" }}>4</option>
+  <option value="3" {{ old('min-rating') == 3 ? "selected" : "" }}>3</option>
+  <option value="2" {{ old('min-rating') == 2 ? "selected" : "" }}>2</option>
+  <option value="1" {{ old('min-rating') == 1 ? "selected" : "" }}>1</option>
+
+  
 </select>
   </div>
   <div class="form-group">
     <label for="date" style="margin-left: 9px; margin-bottom: 14px;">Order by date: </label>
    <select class="form-control" name="date" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
-  <option value="1" selected>Newest First</option>
-  <option value="0">Oldest First</option>
+  <option value="1" {{ old('date') == 1 ? "selected" : "" }}>Newest First</option>
+  <option value="0" {{ old('date') == 0 ? "selected" : "" }}>Oldest First</option>
 </select>
   </div>
   <div class="form-group">
     <label for="hashtag" style="margin-left: 9px; margin-bottom: 14px;">Prioritize by text: </label>
   <select class="form-control" name="text" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
-  <option value="1" selected>Yes</option>
-  <option value="0">No</option>
+  <option value="1" {{ old('text') == 1 ? "selected" : "" }}>Yes</option>
+  <option value="0" {{ old('text') == 0 ? "selected" : "" }}>No</option>
 </select>
   </div>
   <button type="submit" class="btn btn-info" style="margin-left: 9px; margin-bottom: 14px;">Search </button>
@@ -97,4 +111,6 @@
        </div>
 
 @endsection
+
+
                                
