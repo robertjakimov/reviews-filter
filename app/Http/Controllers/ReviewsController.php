@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-
 function getData ($url,$token) { // get data from API function
 $curl = curl_init();
     curl_setopt_array($curl, array(
@@ -17,44 +16,17 @@ $curl = curl_init();
  ));
     return json_decode(curl_exec($curl), true); }
 
-
-
-class HashtagController extends Controller
+class ReviewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Respon
-
-
-     */
-
     public $minRating;
-    
+
     public function index()
     {
 
         return view('reviews'); 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    
-    public function store(Request $request)
+    public function show(Request $request)
     {
       
  //   $this->validate(request(),[
@@ -103,51 +75,6 @@ $finalArray = ($textFilter) ? array_merge($dataText,$dataNoText) : array_merge($
 
     } 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\hashtag  $hashtag
-     * @return \Illuminate\Http\Response
-     */
-    public function show(hashtag $hashtag)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\hashtag  $hashtag
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(hashtag $hashtag)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\hashtag  $hashtag
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, hashtag $hashtag)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\hashtag  $hashtag
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(hashtag $hashtag)
-    {
-        //
-    }
-
     public function filterText($inputArray) { // review with text + rating filter
         global $minRating; 
         if ($inputArray['reviewText']!="" && $inputArray['rating'] >= $minRating  ) return true;
@@ -160,3 +87,5 @@ $finalArray = ($textFilter) ? array_merge($dataText,$dataNoText) : array_merge($
         else return false;
 }
 }
+
+
