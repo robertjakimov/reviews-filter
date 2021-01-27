@@ -16,18 +16,18 @@
             </div>
 
         @endif
- <form class="form-inline" action="{{ url('/')  }}" method="POST">
+ <form class="form-inline" action="{{ url('/search')  }}" method="POST">
   {{ csrf_field() }}
   <div class="form-group">
-    <label for="hashtag" style="margin-left: 9px; margin-bottom: 14px;">Order by rating: </label>
-  <select class="form-control" aria-label="Default select example" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
-  <option value="true" selected>Highest First</option>
-  <option value="false">Lowest First </option>
+    <label for="rating" style="margin-left: 9px; margin-bottom: 14px;">Order by rating: </label>
+  <select class="form-control" name="rating" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
+  <option value="1" selected>Highest First</option>
+  <option value="0">Lowest First </option>
 </select>
   </div>
    <div class="form-group">
-    <label for="hashtag" style="margin-left: 9px; margin-bottom: 14px;">Minimum rating: </label>
-    <select class="form-control" aria-label="Default select example" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
+    <label for="min-rating" style="margin-left: 9px; margin-bottom: 14px;">Minimum rating: </label>
+    <select class="form-control" name="min-rating" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
   <option value="5" selected>5</option>
   <option value="4">4</option>
   <option value="3">3</option>
@@ -36,21 +36,20 @@
 </select>
   </div>
   <div class="form-group">
-    <label for="hashtag" style="margin-left: 9px; margin-bottom: 14px;">Order by date: </label>
-   <select class="form-control" aria-label="Default select example" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
-  <option value="true" selected>Newest First</option>
-  <option value="false">Oldest First</option>
+    <label for="date" style="margin-left: 9px; margin-bottom: 14px;">Order by date: </label>
+   <select class="form-control" name="date" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
+  <option value="1" selected>Newest First</option>
+  <option value="0">Oldest First</option>
 </select>
   </div>
   <div class="form-group">
     <label for="hashtag" style="margin-left: 9px; margin-bottom: 14px;">Prioritize by text: </label>
-  <select class="form-control" aria-label="Default select example" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
-  <option value="true" selected>Yes</option>
-  <option value="false">No</option>
+  <select class="form-control" name="text" style="margin-left: 9px; margin-bottom: 14px; min-width:120px;">
+  <option value="1" selected>Yes</option>
+  <option value="0">No</option>
 </select>
   </div>
-  <button type="submit" class="btn btn-info" style="margin-left: 9px; margin-bottom: 14px;">Search</button>
-</form> 
+  <button type="submit" class="btn btn-info" style="margin-left: 9px; margin-bottom: 14px;">Search </button>
 </form> 
   <table class="table table-striped table-bordered" style="width:100%; margin-top: 10px;">
         <thead>
@@ -66,66 +65,22 @@
         <tbody>
    
 
-
-   <tr> 
-<td>2097047​</td>
-<td>​5 star review</td>
-<td>5</td>
-<td>Reviewer #20</td>
-<td>2021-01-25T13:00:35+00:</td>
-
-
-
-
-   </tr>
-     <tr> 
-<td>2097047​</td>
-<td>​5 star review</td>
-<td>5</td>
-<td>Reviewer #20</td>
-<td>2021-01-25T13:00:35+00:</td>
-
-
-
-
-   </tr>
-
-     <tr> 
-<td>2097047​</td>
-<td>​5 star review</td>
-<td>5</td>
-<td>Reviewer #20</td>
-<td>2021-01-25T13:00:35+00:</td>
-
-
-
-
-   </tr>
-
-     <tr> 
-<td>2097047​</td>
-<td>​5 star review</td>
-<td>5</td>
-<td>Reviewer #20</td>
-<td>2021-01-25T13:00:35+00:</td>
-
-
-
-
-   </tr>
-
-
       @php
-       if (!empty($array)) {
+       if (!empty($finalArray)) {
        @endphp
-       @foreach ($array['hashtags'] as $value)
+       @foreach ($finalArray as $value)
        @php 
        
        @endphp
                          <tr>
-                 <td>{{ $value['hashtag']['media_count'] }} </td>
-         <td> {{ $value['hashtag']['name'] }} </td>
-                 <td> {{ $value['hashtag']['search_result_subtitle'] }} </td>             
+                 <td>{{ $value['id'] }} </td>
+         <td> {{ $value['reviewText'] }} </td>
+                 <td> {{ $value['rating'] }} </td> 
+                 <td> {{ $value['reviewerName'] }} </td> 
+                 <td> {{ $value['reviewCreatedOnDate'] }} </td> 
+                
+
+                           
                       </tr>
                                              
                                              @endforeach
@@ -140,12 +95,6 @@
            </div>
          </div>
        </div>
-           <script>
-            $(document).ready(function() {
-    $('#hashtag').DataTable( {
-        "order": [[ 0, "desc" ]]
-    } );
-} );
-           </script>
+
 @endsection
                                

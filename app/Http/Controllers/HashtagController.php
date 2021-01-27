@@ -4,13 +4,32 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+function getData ($url,$token) { // get data from API function
+$curl = curl_init();
+    curl_setopt_array($curl, array(
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => 1,
+    CURLOPT_CUSTOMREQUEST => "GET",
+    CURLOPT_HTTPHEADER => array( "Content-Type: application/json",
+"Authorization: Bearer " .$token .""
+  ),
+ ));
+    return json_decode(curl_exec($curl), true); }
+
+
+
 class HashtagController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Respon
+
+
      */
+
+    public $minRating;
+    
     public function index()
     {
 
@@ -33,46 +52,55 @@ class HashtagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    
     public function store(Request $request)
     {
       
-    $this->validate(request(),[
-        'hashtag' => 'required'
-        ]);
+ //   $this->validate(request(),[
+   //     'hashtag' => 'required'
+    //    ]);
         
-    $data = request()->all();
+$inputValues = request()->all(); // $data['hashtag']
 
-    $url = 'https://www.instagram.com/web/search/topsearch/?context=blended&query='.$data['hashtag']. '&__a=1';
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL,$url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, Array("User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15") ); 
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $result= curl_exec ($ch);
-    curl_close ($ch);
-    $array = json_decode($result, true);
+$apiURL = "https://embedsocial.com/admin/v2/api/reviews?reviews_ref=​0d44e0b0a245de6fc9651f870d8b44efc4653184";
+$apiToken = "escfe7569d859dd903d77664e9983edf";
+global $minRating; 
+$minRating = $inputValues['min-rating'];
+$textFilter = $inputValues['text'];
+$ratingFilter = ($inputValues['rating'] == 0) ? SORT_ASC : SORT_DESC;
+$dateFilter = ($inputValues['date'] == 0) ? SORT_ASC : SORT_DESC;
+$data = getData($apiURL, $apiToken);
+
+// everything is ready, lets make some magic :)
     
-    foreach ($array['hashtags'] as $value)
+    $sort_array = array();
+    
+    foreach ($data['reviews'] as $key=>$value) 
     {
-     
-        $database = new hashtag();
-        $database->name = $value['hashtag']['name'];
-        $database->id = $value['hashtag']['id'];
-        $database->media_count = $value['hashtag']['media_count'];
-        $database->use_default_avatar = $value['hashtag']['use_default_avatar'];
-        $database->media_count = $value['hashtag']['media_count'];
-        $database->profile_pic_url = $value['hashtag']['profile_pic_url'];  
-        $database->search_result_subtitle = $value['hashtag']['search_result_subtitle'];
-        $database->save();
-    }
+        $sort_array['rating'][$key] = $value['rating'];
+        $sort_array['reviewCreatedOnDate'][$key] = $value['reviewCreatedOnDate'];
+     }
+    
+    array_multisort($sort_array['rating'], $ratingFilter, $sort_array['reviewCreatedOnDate'], $dateFilter,$data['reviews']);
+
+
+
+$dataText = array_filter($data['reviews'], array($this,"filterText"));
+$dataNoText = array_filter($data['reviews'], array($this,"filterNoText"));
+
+ // create final array
+
+$finalArray = ($textFilter) ? array_merge($dataText,$dataNoText) : array_merge($dataNoText,$dataText);
+
+  // print_r($finalArray);
 
     session()->flash('message','Search Completed Successfully!');
 
-    return view('reviews', compact('array')); 
+   // return "test";
 
-    }
+  return view('reviews', compact('finalArray')); 
+
+    } 
 
     /**
      * Display the specified resource.
@@ -118,4 +146,16 @@ class HashtagController extends Controller
     {
         //
     }
+
+    public function filterText($inputArray) { // review with text + rating filter
+        global $minRating; 
+        if ($inputArray['reviewText']!="" && $inputArray['rating'] >= $minRating  ) return true;
+        else return false; 
+    }
+
+    public function filterNoText($inputArray) { // empty review + rating filter
+        global $minRating;
+        if ($inputArray['reviewText'] == ""  && $inputArray['rating'] >= $minRating ) return true;
+        else return false;
+}
 }
