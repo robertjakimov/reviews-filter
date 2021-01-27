@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'HashtagController@index');
-Route::post('/search', 'HashtagController@store'); 
+Route::get('/', 'ReviewsController@index');
+Route::post('/search', 'ReviewsController@show'); 
 
 
 
